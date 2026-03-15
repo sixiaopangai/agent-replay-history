@@ -1,65 +1,83 @@
-import Image from "next/image";
+// 首页 - 登录入口
+import Link from 'next/link';
+import { getSession } from '@/lib/session';
+import { redirect } from 'next/navigation';
 
-export default function Home() {
+export default async function HomePage() {
+  const session = await getSession();
+  if (session) redirect('/character-select');
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
+      {/* 背景 */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0f] via-[#12121a] to-[#0a0a0f]" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[radial-gradient(circle,rgba(139,26,26,0.15)_0%,transparent_70%)]" />
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[radial-gradient(ellipse,rgba(212,168,83,0.08)_0%,transparent_70%)]" />
+
+      <div className="relative z-10 text-center px-6 max-w-2xl">
+        <div className="animate-fade-in-up mb-8">
+          <span className="text-[var(--color-text-dim)] text-sm tracking-widest">
+            知乎 × Second Me · A2A for Reconnect
+          </span>
+        </div>
+
+        <h1
+          className="animate-ink text-5xl md:text-7xl font-black mb-4 tracking-wider"
+          style={{
+            fontFamily: "'Ma Shan Zheng', cursive",
+            color: 'var(--color-gold)',
+            textShadow: '0 0 40px rgba(212,168,83,0.3)',
+          }}
+        >
+          Agent重演历史
+        </h1>
+
+        <p className="animate-fade-in-up text-xl md:text-2xl mb-2 text-[var(--color-text)]"
+          style={{ animationDelay: '0.3s', opacity: 0 }}>
+          当AI分身穿越三国
+        </p>
+        <p className="animate-fade-in-up text-base text-[var(--color-text-dim)] mb-12"
+          style={{ animationDelay: '0.5s', opacity: 0 }}>
+          在历史碰撞中，找到同频的人
+        </p>
+
+        <div className="animate-fade-in-up grid grid-cols-3 gap-4 mb-12 text-sm"
+          style={{ animationDelay: '0.7s', opacity: 0 }}>
+          <div className="card-ancient rounded-lg p-4">
+            <div className="text-2xl mb-2">🎭</div>
+            <div className="text-[var(--color-gold)] font-semibold mb-1">化身英雄</div>
+            <div className="text-[var(--color-text-dim)] text-xs">你的AI分身将成为曹操、诸葛亮...</div>
+          </div>
+          <div className="card-ancient rounded-lg p-4">
+            <div className="text-2xl mb-2">⚔️</div>
+            <div className="text-[var(--color-gold)] font-semibold mb-1">自主决策</div>
+            <div className="text-[var(--color-text-dim)] text-xs">Agent独立思考，改写历史走向</div>
+          </div>
+          <div className="card-ancient rounded-lg p-4">
+            <div className="text-2xl mb-2">🤝</div>
+            <div className="text-[var(--color-gold)] font-semibold mb-1">真人相遇</div>
+            <div className="text-[var(--color-text-dim)] text-xs">历史中的深度交互，连接真实的你</div>
+          </div>
+        </div>
+
+        <div className="animate-fade-in-up" style={{ animationDelay: '0.9s', opacity: 0 }}>
+          <Link
+            href="/api/auth/login"
+            className="btn-ancient inline-block rounded-lg text-lg px-10 py-4 animate-pulse-glow"
+          >
+            以 Second Me 身份进入三国
+          </Link>
+          <p className="mt-4 text-xs text-[var(--color-text-dim)]">
+            使用 Second Me 账号登录，让你的AI分身穿越历史
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div className="animate-fade-in-up mt-16 flex items-center justify-center gap-4 text-xs text-[var(--color-text-dim)]"
+          style={{ animationDelay: '1.1s', opacity: 0 }}>
+          <span className="px-3 py-1 border border-[rgba(212,168,83,0.3)] rounded-full">🚀 无人区赛道</span>
+          <span className="px-3 py-1 border border-[rgba(212,168,83,0.3)] rounded-full">#A2AforReconnect</span>
         </div>
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }

@@ -1,26 +1,99 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-gold: #d4a853;
+  --color-crimson: #8b1a1a;
+  --color-dark: #0a0a0f;
+  --color-dark-surface: #12121a;
+  --color-dark-card: #1a1a28;
+  --color-ink: #2a2a3a;
+  --color-text: #e8e0d0;
+  --color-text-dim: #9a9080;
+  --color-wei: #4a7fb5;
+  --color-shu: #c44e4e;
+  --color-wu: #4eb54e;
+  --color-qun: #b5a04e;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-dark);
+  color: var(--color-text);
+  font-family: 'Noto Serif SC', 'STSong', 'SimSun', serif;
 }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--color-dark); }
+::-webkit-scrollbar-thumb { background: var(--color-gold); border-radius: 3px; }
+
+.btn-ancient {
+  background: linear-gradient(135deg, var(--color-crimson), #6b1010);
+  color: var(--color-gold);
+  border: 1px solid var(--color-gold);
+  padding: 12px 32px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.btn-ancient:hover {
+  background: linear-gradient(135deg, #a02020, var(--color-crimson));
+  box-shadow: 0 0 20px rgba(212, 168, 83, 0.3);
+  transform: translateY(-1px);
+}
+
+.card-ancient {
+  background: var(--color-dark-card);
+  border: 1px solid rgba(212, 168, 83, 0.2);
+  position: relative;
+}
+.card-ancient::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+}
+
+.faction-魏 { color: var(--color-wei); border-color: var(--color-wei); }
+.faction-蜀 { color: var(--color-shu); border-color: var(--color-shu); }
+.faction-吴 { color: var(--color-wu); border-color: var(--color-wu); }
+.faction-群雄 { color: var(--color-qun); border-color: var(--color-qun); }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
+
+@keyframes inkSpread {
+  0% { opacity: 0; filter: blur(10px); transform: scale(0.8); }
+  100% { opacity: 1; filter: blur(0); transform: scale(1); }
+}
+.animate-ink { animation: inkSpread 1s ease-out forwards; }
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 5px rgba(212, 168, 83, 0.3); }
+  50% { box-shadow: 0 0 20px rgba(212, 168, 83, 0.6); }
+}
+.animate-pulse-glow { animation: pulseGlow 2s ease-in-out infinite; }
+
+.streaming-text::after {
+  content: '▌';
+  animation: blink 1s step-end infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+/* 角色选择卡片悬浮 */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.animate-float { animation: float 3s ease-in-out infinite; }
+
+/* 事件卡片展开 */
+@keyframes slideDown {
+  from { opacity: 0; max-height: 0; }
+  to { opacity: 1; max-height: 500px; }
+}
+.animate-slide-down { animation: slideDown 0.4s ease-out forwards; }
