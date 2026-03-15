@@ -87,7 +87,6 @@ ${currentEvent.description}
                 setStreamText(fullText);
               }
             } catch {
-              // 可能是纯文本
               if (data && data !== '[DONE]') {
                 fullText += data;
                 setStreamText(fullText);
@@ -97,7 +96,6 @@ ${currentEvent.description}
         }
       }
 
-      // 如果流式没有拿到内容，用 fallback
       if (!fullText) {
         fullText = `（${character.name}沉思片刻）此计甚妙，${choiceText}正合我意。天下大势，分久必合，合久必分。吾当顺势而为。`;
         setStreamText(fullText);
@@ -113,7 +111,6 @@ ${currentEvent.description}
 
       setDecisions(prev => [...prev, newDecision]);
 
-      // 更新属性
       const choice = currentEvent.choices.find(c => c.id === choiceId);
       if (choice) {
         const consequence = choice.consequence;
@@ -163,126 +160,144 @@ ${currentEvent.description}
   if (!character || !currentEvent) return null;
 
   const progress = ((currentEventIdx + 1) / events.length) * 100;
+  const typeMap: Record<string, { icon: string; label: string; color: string }> = {
+    battle: { icon: '⚔️', label: '战役', color: 'var(--color-shu)' },
+    diplomacy: { icon: '🤝', label: '外交', color: 'var(--color-wei)' },
+    betrayal: { icon: '🗡️', label: '背叛', color: 'var(--color-qun)' },
+    alliance: { icon: '🏳️', label: '联盟', color: 'var(--color-wu)' },
+    internal: { icon: '📜', label: '内政', color: 'var(--color-text-dim)' },
+  };
+  const eventType = typeMap[currentEvent.type] || typeMap.internal;
 
   return (
-    <main className="min-h-screen relative">
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0f] via-[#12121a] to-[#0a0a0f]" />
-
-      <div className="relative z-10 max-w-4xl mx-auto px-4 py-6" ref={scrollRef}>
-        {/* 顶部状态栏 */}
-        <div className="flex items-center justify-between mb-6">
+    <main className="min-h-screen bg-ink-wash relative">
+      {/* 顶部导航 */}
+      <nav className="nav-glass sticky top-0 z-50 px-4 py-3">
+        <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="text-2xl">{character.portrait}</span>
             <div>
-              <div className="font-bold text-[var(--color-gold)]">{character.name}</div>
-              <div className="text-xs text-[var(--color-text-dim)]">{character.faction} · {character.title}</div>
+              <div className="font-bold text-[var(--color-gold)] text-sm tracking-wider">{character.name}</div>
+              <div className="text-[10px] text-[var(--color-text-dim)] tracking-wider">{character.faction} · {character.title}</div>
             </div>
           </div>
-          <div className="flex gap-4 text-sm">
-            <div className="text-center">
-              <div className="text-[var(--color-shu)] font-bold">{reputation}</div>
-              <div className="text-xs text-[var(--color-text-dim)]">声望</div>
-            </div>
-            <div className="text-center">
-              <div className="text-[var(--color-wei)] font-bold">{military}</div>
-              <div className="text-xs text-[var(--color-text-dim)]">军力</div>
-            </div>
-            <div className="text-center">
-              <div className="text-[var(--color-gold)] font-bold">{decisions.length}</div>
-              <div className="text-xs text-[var(--color-text-dim)]">决策</div>
-            </div>
-          </div>
-          <button onClick={goToAchievements} className="text-sm text-[var(--color-gold)] hover:underline">
-            查看成就
-          </button>
-        </div>
 
+          <div className="flex items-center gap-5">
+            {[
+              { value: reputation, label: '声望', color: 'var(--color-shu)' },
+              { value: military, label: '军力', color: 'var(--color-wei)' },
+              { value: decisions.length, label: '决策', color: 'var(--color-gold)' },
+            ].map(stat => (
+              <div key={stat.label} className="text-center">
+                <div className="text-base font-bold" style={{ color: stat.color }}>{stat.value}</div>
+                <div className="text-[9px] text-[var(--color-text-dim)] tracking-wider">{stat.label}</div>
+              </div>
+            ))}
+            <button onClick={goToAchievements}
+              className="text-[11px] text-[var(--color-gold)] tracking-wider px-3 py-1.5 rounded-full border border-[rgba(212,168,83,0.2)] hover:border-[rgba(212,168,83,0.4)] hover:bg-[rgba(212,168,83,0.05)] transition-all">
+              成就
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <div className="relative z-10 max-w-4xl mx-auto px-4 py-6" ref={scrollRef}>
         {/* 进度条 */}
-        <div className="mb-6">
-          <div className="flex justify-between text-xs text-[var(--color-text-dim)] mb-1">
+        <div className="mb-8">
+          <div className="flex justify-between text-[10px] text-[var(--color-text-dim)] mb-2 tracking-wider">
             <span>历史进程</span>
             <span>{currentEventIdx + 1} / {events.length}</span>
           </div>
-          <div className="h-1.5 bg-[var(--color-dark-card)] rounded-full overflow-hidden">
-            <div
-              className="h-full bg-gradient-to-r from-[var(--color-crimson)] to-[var(--color-gold)] rounded-full transition-all duration-500"
-              style={{ width: `${progress}%` }}
-            />
+          <div className="progress-bar">
+            <div className="progress-fill" style={{ width: `${progress}%` }} />
           </div>
         </div>
 
         {/* 当前事件 */}
         {showEvent && (
-          <div className="animate-fade-in-up card-ancient rounded-lg p-6 mb-6">
-            <div className="flex items-center gap-2 mb-3">
-              <span className={`text-xs px-2 py-0.5 rounded-full border ${
-                currentEvent.type === 'battle' ? 'border-[var(--color-shu)] text-[var(--color-shu)]' :
-                currentEvent.type === 'diplomacy' ? 'border-[var(--color-wei)] text-[var(--color-wei)]' :
-                currentEvent.type === 'betrayal' ? 'border-[var(--color-qun)] text-[var(--color-qun)]' :
-                'border-[var(--color-wu)] text-[var(--color-wu)]'
-              }`}>
-                {currentEvent.type === 'battle' ? '⚔️ 战役' :
-                 currentEvent.type === 'diplomacy' ? '🤝 外交' :
-                 currentEvent.type === 'betrayal' ? '🗡️ 背叛' :
-                 currentEvent.type === 'alliance' ? '🏳️ 联盟' : '📜 内政'}
+          <div className="animate-fade-in-up card-scroll p-7 mb-6">
+            {/* 事件标签 */}
+            <div className="flex items-center gap-2 mb-4">
+              <span className="tag-ancient" style={{ color: eventType.color, borderColor: eventType.color, background: `color-mix(in srgb, ${eventType.color} 8%, transparent)` }}>
+                {eventType.icon} {eventType.label}
               </span>
-              <span className="text-xs text-[var(--color-text-dim)]">{currentEvent.year}</span>
-              <span className={`text-xs px-2 py-0.5 rounded-full ${
-                currentEvent.difficulty === 'hard' ? 'bg-[rgba(196,78,78,0.2)] text-[var(--color-shu)]' :
-                currentEvent.difficulty === 'medium' ? 'bg-[rgba(212,168,83,0.2)] text-[var(--color-gold)]' :
-                'bg-[rgba(78,181,78,0.2)] text-[var(--color-wu)]'
-              }`}>
+              <span className="text-[11px] text-[var(--color-text-dim)] tracking-wider">{currentEvent.year}</span>
+              <span className="tag-ancient" style={{
+                color: currentEvent.difficulty === 'hard' ? 'var(--color-shu)' : currentEvent.difficulty === 'medium' ? 'var(--color-gold)' : 'var(--color-wu)',
+                borderColor: currentEvent.difficulty === 'hard' ? 'var(--color-shu)' : currentEvent.difficulty === 'medium' ? 'var(--color-gold)' : 'var(--color-wu)',
+                background: currentEvent.difficulty === 'hard' ? 'rgba(212,90,90,0.08)' : currentEvent.difficulty === 'medium' ? 'rgba(212,168,83,0.08)' : 'rgba(90,212,90,0.08)',
+              }}>
                 {currentEvent.difficulty === 'hard' ? '困难' : currentEvent.difficulty === 'medium' ? '中等' : '简单'}
               </span>
             </div>
 
-            <h2 className="text-xl font-bold text-[var(--color-gold)] mb-3"
-              style={{ fontFamily: "'Ma Shan Zheng', cursive" }}>
+            {/* 事件标题 */}
+            <h2 className="text-2xl font-bold mb-4 tracking-[3px]"
+              style={{
+                fontFamily: "'Ma Shan Zheng', cursive",
+                background: 'linear-gradient(180deg, #f0d890, #d4a853)',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                color: 'transparent',
+              }}>
               {currentEvent.name}
             </h2>
-            <p className="text-sm text-[var(--color-text)] mb-6 leading-relaxed">
+
+            <div className="divider-ink mb-4" />
+
+            <p className="text-sm text-[var(--color-text)] leading-[1.9] tracking-wider mb-6">
               {currentEvent.description}
             </p>
 
             {/* 决策选项 */}
             {!streamText && (
               <div className="space-y-3">
-                <p className="text-xs text-[var(--color-text-dim)] mb-2">
+                <p className="text-[11px] text-[var(--color-text-dim)] mb-3 tracking-wider">
                   以{character.name}之名，你将如何抉择？
                 </p>
-                {currentEvent.choices.map(choice => (
+                {currentEvent.choices.map((choice, i) => (
                   <button
                     key={choice.id}
                     onClick={() => handleChoice(choice.id, choice.text)}
                     disabled={streaming}
-                    className="w-full text-left p-4 rounded-lg bg-[var(--color-dark-surface)] border border-[rgba(212,168,83,0.15)] hover:border-[var(--color-gold)] hover:bg-[rgba(212,168,83,0.05)] transition-all disabled:opacity-40"
+                    className="choice-option w-full text-left disabled:opacity-30 group"
+                    style={{ animationDelay: `${i * 0.1}s` }}
                   >
-                    <div className="text-sm text-[var(--color-text)]">{choice.text}</div>
-                    <div className="text-xs text-[var(--color-text-dim)] mt-1">{choice.consequence}</div>
+                    <div className="flex items-start gap-3">
+                      <span className="text-[var(--color-gold)] opacity-40 text-sm mt-0.5 group-hover:opacity-80 transition-opacity">
+                        {['壹', '贰', '叁'][i]}
+                      </span>
+                      <div>
+                        <div className="text-sm text-[var(--color-text)] group-hover:text-[var(--color-gold)] transition-colors tracking-wider">{choice.text}</div>
+                        <div className="text-[11px] text-[var(--color-text-dim)] mt-1 leading-relaxed">{choice.consequence}</div>
+                      </div>
+                    </div>
                   </button>
                 ))}
               </div>
             )}
 
-            {/* Agent 回应（流式） */}
+            {/* Agent 回应 */}
             {streamText && (
-              <div className="mt-4 p-4 rounded-lg bg-[var(--color-dark-surface)] border border-[rgba(212,168,83,0.2)]">
-                <div className="flex items-center gap-2 mb-2">
+              <div className="mt-5 card-scroll p-5">
+                <div className="flex items-center gap-2 mb-3">
                   <span className="text-lg">{character.portrait}</span>
-                  <span className="text-sm font-bold text-[var(--color-gold)]">{character.name}的决策</span>
+                  <span className="text-sm font-bold text-[var(--color-gold)] tracking-wider">{character.name}</span>
+                  <span className="text-[10px] text-[var(--color-text-dim)]">的决策</span>
                 </div>
-                <p className={`text-sm text-[var(--color-text)] leading-relaxed ${streaming ? 'streaming-text' : ''}`}>
+                <div className="divider-ink mb-3" />
+                <p className={`text-sm text-[var(--color-text)] leading-[1.9] tracking-wider ${streaming ? 'streaming-cursor' : ''}`}>
                   {streamText}
                 </p>
                 {!streaming && (
-                  <div className="mt-4 flex gap-3">
+                  <div className="mt-5 flex gap-3">
                     {currentEventIdx < events.length - 1 ? (
-                      <button onClick={nextEvent} className="btn-ancient rounded-lg text-sm px-6 py-2">
-                        继续推进历史 →
+                      <button onClick={nextEvent} className="btn-brush rounded-lg text-sm px-8 py-2.5 tracking-wider">
+                        继续推进历史
                       </button>
                     ) : (
-                      <button onClick={goToAchievements} className="btn-ancient rounded-lg text-sm px-6 py-2">
-                        查看最终成就 🏆
+                      <button onClick={goToAchievements} className="btn-brush rounded-lg text-sm px-8 py-2.5 tracking-wider">
+                        查看最终成就
                       </button>
                     )}
                   </div>
@@ -294,19 +309,19 @@ ${currentEvent.description}
 
         {/* 历史决策日志 */}
         {decisions.length > 0 && (
-          <div className="mt-8">
-            <h3 className="text-sm font-bold text-[var(--color-gold)] mb-4"
+          <div className="mt-10">
+            <h3 className="text-base font-bold text-[var(--color-gold)] mb-5 tracking-[3px]"
               style={{ fontFamily: "'Ma Shan Zheng', cursive" }}>
-              📜 {character.name}的历史轨迹
+              {character.name}的历史轨迹
             </h3>
             <div className="space-y-3">
               {[...decisions].reverse().map((d, i) => (
-                <div key={i} className="card-ancient rounded-lg p-4 opacity-80">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs text-[var(--color-gold)]">{d.eventName}</span>
+                <div key={i} className="card-scroll p-4 opacity-70 hover:opacity-100 transition-opacity">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-[11px] text-[var(--color-gold)] tracking-wider">{d.eventName}</span>
                   </div>
-                  <div className="text-xs text-[var(--color-text-dim)]">选择：{d.choiceText}</div>
-                  <div className="text-xs text-[var(--color-text)] mt-1 line-clamp-2">{d.aiResponse}</div>
+                  <div className="text-[11px] text-[var(--color-text-dim)] tracking-wider">决策：{d.choiceText}</div>
+                  <div className="text-[11px] text-[var(--color-text)] mt-1 line-clamp-2 leading-relaxed">{d.aiResponse}</div>
                 </div>
               ))}
             </div>

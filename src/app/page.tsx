@@ -8,76 +8,88 @@ export default async function HomePage() {
   if (session) redirect('/character-select');
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
-      {/* 背景 */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0f] via-[#12121a] to-[#0a0a0f]" />
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[radial-gradient(circle,rgba(139,26,26,0.15)_0%,transparent_70%)]" />
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[radial-gradient(ellipse,rgba(212,168,83,0.08)_0%,transparent_70%)]" />
+    <main className="min-h-screen bg-ink-wash flex flex-col items-center justify-center relative overflow-hidden">
+      {/* 装饰性水墨圆 */}
+      <div className="absolute top-[-200px] left-1/2 -translate-x-1/2 w-[800px] h-[800px] rounded-full bg-[radial-gradient(circle,rgba(139,26,26,0.08)_0%,transparent_60%)]" />
+      <div className="absolute bottom-[-100px] right-[-100px] w-[500px] h-[500px] rounded-full bg-[radial-gradient(circle,rgba(90,159,212,0.05)_0%,transparent_60%)]" />
+      <div className="absolute top-[30%] left-[-50px] w-[300px] h-[300px] rounded-full bg-[radial-gradient(circle,rgba(212,168,83,0.04)_0%,transparent_60%)]" />
 
-      <div className="relative z-10 text-center px-6 max-w-2xl">
-        <div className="animate-fade-in-up mb-8">
-          <span className="text-[var(--color-text-dim)] text-sm tracking-widest">
-            知乎 × Second Me · A2A for Reconnect
+      {/* 顶部飘浮装饰文字 */}
+      <div className="absolute top-0 left-0 right-0 flex justify-center pt-6 opacity-[0.04] text-[120px] tracking-[40px] text-[var(--color-gold)] select-none overflow-hidden whitespace-nowrap"
+        style={{ fontFamily: "'Ma Shan Zheng', cursive" }}>
+        魏蜀吴魏蜀吴魏蜀吴
+      </div>
+
+      <div className="relative z-10 text-center px-6 max-w-xl">
+        {/* 黑客松标签 */}
+        <div className="animate-fade-in-up mb-10">
+          <span className="inline-block text-[var(--color-text-dim)] text-xs tracking-[6px] px-5 py-2 rounded-full border border-rgba(212,168,83,0.15)] bg-[rgba(212,168,83,0.03)]">
+            知乎 × Second Me · A2A Hackathon
           </span>
         </div>
 
+        {/* 主标题 */}
         <h1
-          className="animate-ink text-5xl md:text-7xl font-black mb-4 tracking-wider"
+          className="animate-ink-reveal text-6xl md:text-8xl font-black mb-6 tracking-[8px] leading-tight"
           style={{
             fontFamily: "'Ma Shan Zheng', cursive",
-            color: 'var(--color-gold)',
-            textShadow: '0 0 40px rgba(212,168,83,0.3)',
+            background: 'linear-gradient(180deg, #f0d890 0%, #d4a853 40%, #b8862b 100%)',
+            WebkitBackgroundClip: 'text',
+            backgroundClip: 'text',
+            color: 'transparent',
+            filter: 'drop-shadow(0 2px 20px rgba(212,168,83,0.25))',
           }}
         >
-          Agent重演历史
+          重演历史
         </h1>
 
-        <p className="animate-fade-in-up text-xl md:text-2xl mb-2 text-[var(--color-text)]"
-          style={{ animationDelay: '0.3s', opacity: 0 }}>
+        {/* 副标题 */}
+        <p className="animate-fade-in-up text-lg md:text-xl text-[var(--color-text)] tracking-[4px] mb-1"
+          style={{ animationDelay: '0.4s', opacity: 0 }}>
           当AI分身穿越三国
         </p>
-        <p className="animate-fade-in-up text-base text-[var(--color-text-dim)] mb-12"
-          style={{ animationDelay: '0.5s', opacity: 0 }}>
+        <p className="animate-fade-in-up text-sm text-[var(--color-text-dim)] tracking-[3px] mb-14"
+          style={{ animationDelay: '0.6s', opacity: 0 }}>
           在历史碰撞中，找到同频的人
         </p>
 
-        <div className="animate-fade-in-up grid grid-cols-3 gap-4 mb-12 text-sm"
-          style={{ animationDelay: '0.7s', opacity: 0 }}>
-          <div className="card-ancient rounded-lg p-4">
-            <div className="text-2xl mb-2">🎭</div>
-            <div className="text-[var(--color-gold)] font-semibold mb-1">化身英雄</div>
-            <div className="text-[var(--color-text-dim)] text-xs">你的AI分身将成为曹操、诸葛亮...</div>
-          </div>
-          <div className="card-ancient rounded-lg p-4">
-            <div className="text-2xl mb-2">⚔️</div>
-            <div className="text-[var(--color-gold)] font-semibold mb-1">自主决策</div>
-            <div className="text-[var(--color-text-dim)] text-xs">Agent独立思考，改写历史走向</div>
-          </div>
-          <div className="card-ancient rounded-lg p-4">
-            <div className="text-2xl mb-2">🤝</div>
-            <div className="text-[var(--color-gold)] font-semibold mb-1">真人相遇</div>
-            <div className="text-[var(--color-text-dim)] text-xs">历史中的深度交互，连接真实的你</div>
-          </div>
+        {/* 三个特性 */}
+        <div className="animate-fade-in-up grid grid-cols-3 gap-3 mb-14"
+          style={{ animationDelay: '0.8s', opacity: 0 }}>
+          {[
+            { icon: '🎭', title: '化身英雄', desc: 'AI分身成为曹操、诸葛亮' },
+            { icon: '⚔️', title: '自主决策', desc: 'Agent独立思考改写历史' },
+            { icon: '🤝', title: '真人相遇', desc: '深度交互连接真实的你' },
+          ].map((item, i) => (
+            <div key={i} className="card-scroll p-4 text-center group">
+              <div className="text-2xl mb-2 group-hover:animate-float-slow">{item.icon}</div>
+              <div className="text-[var(--color-gold)] text-sm font-semibold mb-1 tracking-wider">{item.title}</div>
+              <div className="text-[var(--color-text-dim)] text-[11px] leading-relaxed">{item.desc}</div>
+            </div>
+          ))}
         </div>
 
-        <div className="animate-fade-in-up" style={{ animationDelay: '0.9s', opacity: 0 }}>
-          <Link
-            href="/api/auth/login"
-            className="btn-ancient inline-block rounded-lg text-lg px-10 py-4 animate-pulse-glow"
-          >
+        {/* CTA 按钮 */}
+        <div className="animate-fade-in-up" style={{ animationDelay: '1s', opacity: 0 }}>
+          <Link href="/api/auth/login" className="btn-brush inline-block animate-breath rounded-lg">
             以 Second Me 身份进入三国
           </Link>
-          <p className="mt-4 text-xs text-[var(--color-text-dim)]">
+          <p className="mt-5 text-[11px] text-[var(--color-text-dim)] tracking-wider">
             使用 Second Me 账号登录，让你的AI分身穿越历史
           </p>
         </div>
 
-        <div className="animate-fade-in-up mt-16 flex items-center justify-center gap-4 text-xs text-[var(--color-text-dim)]"
-          style={{ animationDelay: '1.1s', opacity: 0 }}>
-          <span className="px-3 py-1 border border-[rgba(212,168,83,0.3)] rounded-full">🚀 无人区赛道</span>
-          <span className="px-3 py-1 border border-[rgba(212,168,83,0.3)] rounded-full">#A2AforReconnect</span>
+        {/* 底部标签 */}
+        <div className="animate-fade-in-up mt-20 flex items-center justify-center gap-3"
+          style={{ animationDelay: '1.2s', opacity: 0 }}>
+          <span className="tag-ancient border-[rgba(212,168,83,0.2)] text-[var(--color-text-dim)]">无人区赛道</span>
+          <span className="text-[var(--color-text-dim)] text-[10px]">·</span>
+          <span className="tag-ancient border-[rgba(212,168,83,0.2)] text-[var(--color-gold)]">#A2AforReconnect</span>
         </div>
       </div>
+
+      {/* 底部渐隐装饰 */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[var(--color-dark)] to-transparent" />
     </main>
   );
 }
