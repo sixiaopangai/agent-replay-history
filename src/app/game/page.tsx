@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Character } from '@/data/characters';
 import { events, HistoricalEvent } from '@/data/events';
+import { GoldTitle, StatCard, FactionTag } from '@/components';
 
 interface Decision {
   eventId: string;
@@ -188,10 +189,7 @@ ${currentEvent.description}
               { value: military, label: '军力', color: 'var(--color-wei)' },
               { value: decisions.length, label: '决策', color: 'var(--color-gold)' },
             ].map(stat => (
-              <div key={stat.label} className="text-center">
-                <div className="text-base font-bold" style={{ color: stat.color }}>{stat.value}</div>
-                <div className="text-[9px] text-[var(--color-text-dim)] tracking-wider">{stat.label}</div>
-              </div>
+              <StatCard key={stat.label} value={stat.value} label={stat.label} color={stat.color} />
             ))}
             <button onClick={goToAchievements}
               className="text-[11px] text-[var(--color-gold)] tracking-wider px-3 py-1.5 rounded-full border border-[rgba(212,168,83,0.2)] hover:border-[rgba(212,168,83,0.4)] hover:bg-[rgba(212,168,83,0.05)] transition-all">
@@ -218,30 +216,19 @@ ${currentEvent.description}
           <div className="animate-fade-in-up card-scroll p-7 mb-6">
             {/* 事件标签 */}
             <div className="flex items-center gap-2 mb-4">
-              <span className="tag-ancient" style={{ color: eventType.color, borderColor: eventType.color, background: `color-mix(in srgb, ${eventType.color} 8%, transparent)` }}>
-                {eventType.icon} {eventType.label}
-              </span>
+              <FactionTag label={eventType.label} color={eventType.color} icon={eventType.icon} bgColor={`color-mix(in srgb, ${eventType.color} 8%, transparent)`} />
               <span className="text-[11px] text-[var(--color-text-dim)] tracking-wider">{currentEvent.year}</span>
-              <span className="tag-ancient" style={{
-                color: currentEvent.difficulty === 'hard' ? 'var(--color-shu)' : currentEvent.difficulty === 'medium' ? 'var(--color-gold)' : 'var(--color-wu)',
-                borderColor: currentEvent.difficulty === 'hard' ? 'var(--color-shu)' : currentEvent.difficulty === 'medium' ? 'var(--color-gold)' : 'var(--color-wu)',
-                background: currentEvent.difficulty === 'hard' ? 'rgba(212,90,90,0.08)' : currentEvent.difficulty === 'medium' ? 'rgba(212,168,83,0.08)' : 'rgba(90,212,90,0.08)',
-              }}>
-                {currentEvent.difficulty === 'hard' ? '困难' : currentEvent.difficulty === 'medium' ? '中等' : '简单'}
-              </span>
+              <FactionTag
+                label={currentEvent.difficulty === 'hard' ? '困难' : currentEvent.difficulty === 'medium' ? '中等' : '简单'}
+                color={currentEvent.difficulty === 'hard' ? 'var(--color-shu)' : currentEvent.difficulty === 'medium' ? 'var(--color-gold)' : 'var(--color-wu)'}
+                bgColor={currentEvent.difficulty === 'hard' ? 'rgba(212,90,90,0.08)' : currentEvent.difficulty === 'medium' ? 'rgba(212,168,83,0.08)' : 'rgba(90,212,90,0.08)'}
+              />
             </div>
 
             {/* 事件标题 */}
-            <h2 className="text-2xl font-bold mb-4 tracking-[3px]"
-              style={{
-                fontFamily: "'Ma Shan Zheng', cursive",
-                background: 'linear-gradient(180deg, #f0d890, #d4a853)',
-                WebkitBackgroundClip: 'text',
-                backgroundClip: 'text',
-                color: 'transparent',
-              }}>
+            <GoldTitle as="h2" className="text-2xl tracking-[3px] mb-4">
               {currentEvent.name}
-            </h2>
+            </GoldTitle>
 
             <div className="divider-ink mb-4" />
 

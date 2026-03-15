@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Character } from '@/data/characters';
+import { GoldTitle, StatCard } from '@/components';
 
 interface GameState {
   character: Character;
@@ -49,16 +50,9 @@ export default function AchievementsPage() {
 
           <div className="text-6xl mb-5 animate-float-slow">{character.portrait}</div>
 
-          <h1 className="text-3xl font-bold tracking-[4px] mb-2"
-            style={{
-              fontFamily: "'Ma Shan Zheng', cursive",
-              background: 'linear-gradient(180deg, #f0d890, #d4a853)',
-              WebkitBackgroundClip: 'text',
-              backgroundClip: 'text',
-              color: 'transparent',
-            }}>
+          <GoldTitle className="text-3xl tracking-[4px] mb-2">
             {character.name}的三国传
-          </h1>
+          </GoldTitle>
           <p className="text-[11px] text-[var(--color-text-dim)] tracking-[3px] mb-8">
             {character.title} · {character.faction}
           </p>
@@ -84,8 +78,7 @@ export default function AchievementsPage() {
               { value: wins, label: '关键胜利', color: 'var(--color-wu)' },
             ].map(stat => (
               <div key={stat.label} className="p-4 rounded-xl bg-[rgba(6,6,16,0.5)] border border-[rgba(212,168,83,0.06)]">
-                <div className="text-2xl font-bold mb-1" style={{ color: stat.color }}>{stat.value}</div>
-                <div className="text-[9px] text-[var(--color-text-dim)] tracking-wider">{stat.label}</div>
+                <StatCard value={stat.value} label={stat.label} color={stat.color} size="lg" />
               </div>
             ))}
           </div>

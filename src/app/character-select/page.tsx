@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { characters, Character } from '@/data/characters';
+import { GoldTitle, InkBackground } from '@/components';
 
 const factionColors: Record<string, string> = {
   '魏': 'var(--color-wei)',
@@ -34,23 +35,17 @@ export default function CharacterSelectPage() {
 
   return (
     <main className="min-h-screen bg-ink-wash relative">
-      {/* 装饰 */}
-      <div className="absolute top-0 right-0 w-[400px] h-[400px] rounded-full bg-[radial-gradient(circle,rgba(139,26,26,0.06)_0%,transparent_60%)]" />
-      <div className="absolute bottom-0 left-0 w-[300px] h-[300px] rounded-full bg-[radial-gradient(circle,rgba(90,159,212,0.04)_0%,transparent_60%)]" />
+      <InkBackground circles={[
+        { position: 'top-0 right-0', size: 'w-[400px] h-[400px]', color: 'rgba(139,26,26,0.06)' },
+        { position: 'bottom-0 left-0', size: 'w-[300px] h-[300px]', color: 'rgba(90,159,212,0.04)' },
+      ]} />
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 py-10">
         {/* 标题区 */}
         <div className="text-center mb-10">
-          <h1 className="animate-ink-reveal text-4xl md:text-5xl font-bold tracking-[6px] mb-3"
-            style={{
-              fontFamily: "'Ma Shan Zheng', cursive",
-              background: 'linear-gradient(180deg, #f0d890 0%, #d4a853 60%, #b8862b 100%)',
-              WebkitBackgroundClip: 'text',
-              backgroundClip: 'text',
-              color: 'transparent',
-            }}>
+          <GoldTitle className="animate-ink-reveal text-4xl md:text-5xl tracking-[6px] mb-3">
             择主而事
-          </h1>
+          </GoldTitle>
           <p className="text-[var(--color-text-dim)] text-sm tracking-[3px]">你的AI分身将以此人物的身份穿越三国</p>
         </div>
 
